@@ -15,12 +15,14 @@ def populateScoringMatrix(alphabet, subMat, a, b):
     dirMat = initialiseDirectionMatrix(alphabet, subMat, a, b)
     for i in range(1, len(b) + 1):
         for j in range(1, len(a) + 1):
-            bestScore = max(scoMat[i-1][j-1] + subMat[alphabet.index(a[j - 1])][alphabet.index(b[i - 1])], 
-                            scoMat[i-1][j] + subMat[len(alphabet)][alphabet.index(a[j - 1])],
-                            scoMat[i][j-1] + subMat[len(alphabet)][alphabet.index(b[i - 1])])
+            if(j - 1 == 0 and i - 1 == 0): diagonal = subMat[len(alphabet)][len(alphabet)]
+            else: diagonal = scoMat[i-1][j-1] + subMat[alphabet.index(a[j - 1])][alphabet.index(b[i - 1])]
+            left = scoMat[i-1][j] + subMat[len(alphabet)][alphabet.index(a[j - 1])]
+            up = scoMat[i][j-1] + subMat[len(alphabet)][alphabet.index(b[i - 1])]
+            bestScore = max(diagonal, left, up)
             scoMat[i][j] = bestScore
-            if bestScore == scoMat[i-1][j-1] + subMat[alphabet.index(a[j - 1])][alphabet.index(b[i - 1])]: dirMat[i][j] = "D"
-            elif bestScore == scoMat[i-1][j] + subMat[len(alphabet)][alphabet.index(a[j - 1])]: dirMat[i][j] = "U"
+            if bestScore == diagonal: dirMat[i][j] = "D"
+            elif up: dirMat[i][j] = "U"
             else: dirMat[i][j] = "L"
     return [scoMat, dirMat]
 
