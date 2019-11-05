@@ -4,11 +4,12 @@ def dynprof(alphabet, subMat, a, b):
     lst = populateScoringMatrix(alphabet, subMat, a, b)
     scoMat = lst[0]
     dirMat = lst[1]
-    result = getBestMatching(scoMat, dirMat, a, b)
+    alignment = getBestMatching(scoMat, dirMat, a, b)
+    scoreAndAlignment = [scoMat[len(a)][len(b)], alignment[0], alignment[1]]
     printMatrix(scoMat)
     printMatrix(dirMat)
-    print(result)
-    return result
+    print(scoreAndAlignment)
+    return scoreAndAlignment
 
 def populateScoringMatrix(alphabet, subMat, a, b):
     scoMat = initialiseScoringMatrix(alphabet, subMat, a, b)
