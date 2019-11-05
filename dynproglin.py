@@ -1,10 +1,14 @@
+# Hirschberg's Algorithm
+# https://en.wikipedia.org/wiki/Hirschberg%27s_algorithm
+
 def dynproglin(alphabet, subMat, a, b):
-    if(len(b) == 1):
-        #align a[1..len(a)] and b[1,1]
-        print(a)
-    else:
 
+    if(len(a) <= 1 or len(b) <= 1):
+        print("s")
 
+    for i in range(0, len(a)):
+        print("Hio")
+    
 
 
 #Examples 

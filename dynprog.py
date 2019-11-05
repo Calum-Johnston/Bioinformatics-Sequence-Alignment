@@ -1,3 +1,5 @@
+# Needleman-Wunsch (N-W) algorithm
+
 def dynprog(alphabet, subMat, a, b):
     lst = populateScoringMatrix(alphabet, subMat, a, b)
     scoMat = lst[0]
