@@ -1,6 +1,4 @@
-import numpy as np
-
-def dynprof(alphabet, subMat, a, b):
+def dynprog(alphabet, subMat, a, b):
     lst = populateScoringMatrix(alphabet, subMat, a, b)
     scoMat = lst[0]
     dirMat = lst[1]
@@ -69,10 +67,10 @@ def printMatrix(matrix):
 
 #Examples 
 #a = [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]]
-#dynprof("ABC", a, "ABCACA", "BAACB")
+#dynprog("ABC", a, "ABCACA", "BAACB")
 
 #b = [[1,-1,-1,-1,-2],[-1,1,-1,-1,-2],[-1,-1,1,-1,-2],[-1,-1,-1,1,-2],[-2,-2,-2,-2,1]]
-#dynprof("ACGT", b, "AAAC", "AGC") 
+#dynprog("ACGT", b, "AAAC", "AAGC") 
 
 #c = [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]]
-#dynprof("ACGT", c, "GACTTAC", "CGTGAATTCAT") 
+#dynprog("ACGT", c, "GACTTAC", "CGTGAATTCAT") 
