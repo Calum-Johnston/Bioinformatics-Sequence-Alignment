@@ -55,7 +55,7 @@ def initialiseDirectionMatrix(alphabet, subMat, a, b):
 
 def getBestMatching(scoMat, dirMat, a, b, maxValuePos):
     xPos = maxValuePos[0]
-    yPos = maxValuePos[0]
+    yPos = maxValuePos[1]
     aMatch = []
     bMatch = []
     while(scoMat[xPos][yPos] != 0):
@@ -68,7 +68,9 @@ def getBestMatching(scoMat, dirMat, a, b, maxValuePos):
             xPos -= 1
         else:
             yPos -= 1
-    return [aMatch, bMatch]
+    
+    return [aMatch, bMatch]    
+
 
 
 def printMatrix(matrix):
