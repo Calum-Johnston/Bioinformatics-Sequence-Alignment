@@ -64,15 +64,7 @@ def printMatrix(matrix):
 
 
 
-#Examples 
-#a = [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]]
-#dynprog("ABC", a, "ABCACA", "BAACB")
-
-#b = [[1,-1,-1,-1,-2],[-1,1,-1,-1,-2],[-1,-1,1,-1,-2],[-1,-1,-1,1,-2],[-2,-2,-2,-2,1]]
-#dynprog("ACGT", b, "AAAC", "AAGC") 
-
-#c = [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]]
-#dynprog("ACGT", c, "GACTTAC", "CGTGAATTCAT") 
+# TEST CASES
 
 a = dynprog ("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
 print("Score:   ", a[0])
@@ -81,3 +73,7 @@ print("Indices: ", a[1],a[2])
 b = dynprog ("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
 print("Score:   ", b[0])
 print("Indices: ", b[1],b[2])
+
+c = dynprog("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
+print("Score:   ", c[0])
+print("Indices: ", c[1],c[2])
