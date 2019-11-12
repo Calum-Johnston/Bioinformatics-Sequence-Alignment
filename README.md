@@ -9,9 +9,8 @@ Local Alignment:
 - Smith-Waterson Algorithm
 
 
-=====================================================
-FORMAT
-=====================================================
+
+# FORMAT
 INPUT: (Alphabet, Substitution Matrix, sequence_1, sequence_2) where
 - Alphabet is a string
 - Substitution Matrix is a list of lists (2D array)
