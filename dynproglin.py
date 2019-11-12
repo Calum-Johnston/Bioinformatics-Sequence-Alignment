@@ -37,14 +37,26 @@ def dynproglin(alphabet, subMat, a, b):
 
 def NWScore(a, b, alphabet, subMat):
     scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
-
-    for j in range(0, len(b)):
-        scoringMatrix[0][j] = Sc
-
-    for i in range(0, len(a)):
-        for j in range(0, len(b)):
-            
-            # Account for the first row
+    # Initialises first row
+    for y in range(1, len(b) + 1):
+        scoringMatrix[0][y] = scoringMatrix[0][y-1] + subMat[len(alphabet)][alphabet.index(b[y - 1])]
+    
+    # Completes all rows but the first (0th)
+    for x in range(1, len(a) + 1):
+        # Completes all column positions (including 0th)
+        for y in range(0, len(b) + 1):
+            if(y == 0):
+                scoringMatrix[1][y] = scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])]
+            else:
+                scoringMatrix[1][y] = max(
+                    scoringMatrix[0][y-1] + subMat[alphabet.index(a[x - 1])][alphabet.index(b[y - 1])],
+                    scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])],
+                    scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)]
+                )
+        # Puts row 1 in row 0
+        for z in range(0, len(b) + 1):
+            scoringMatrix[0][z] = scoringMatrix[1][z]
+    return scoringMatrix[1]
 
 
 def printMatrix(matrix):
@@ -58,8 +70,6 @@ def reverseList(lst):
 
 
     
-
-NWScore("asdasa", "asfa")
 
 # TEST CASES
 
