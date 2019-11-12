@@ -7,11 +7,11 @@ def dynproglin(alphabet, subMat, a, b):
         aAlign, bAlign = "", ""
 
         if(len(a) == 0):
-          for i in range(0, len(b) - 1):
+          for i in range(0, len(b)):
                 aAlign + "-"
                 bAlign += b[i]
         elif(len(b) == 0):
-            for i in range(0, len(a) - 1):
+            for i in range(0, len(a)):
                 aAlign += a[i]
                 bAlign += "-"
         elif(len(a) == 1 or len(b) == 1):
@@ -22,9 +22,7 @@ def dynproglin(alphabet, subMat, a, b):
             aMid = int(len(a) / 2)
             scoreL = NWScore(a[:aMid], b, alphabet, subMat)
             scoreR = NWScore(reverseList(a[aMid:]), reverseList(b), alphabet, subMat)
-
             temp = [x + y for x, y in zip(scoreL, reverseList(scoreR))]
-            print(temp)
             bMid = temp.index(max(temp))
 
             aAlign_l, bAlign_1 = Hirschberg(a[:aMid], b[:bMid], alphabet, subMat)
@@ -74,7 +72,7 @@ def reverseList(lst):
 
 
 
-4
+
 
 def NeedlanWunsch(alphabet, subMat, a, b):
 
@@ -155,6 +153,9 @@ def NeedlanWunsch(alphabet, subMat, a, b):
 #print("Score:   ", c[0])
 #print("Indices: ", c[1],c[2])
 
-d = dynproglin("ABC",  [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ABCACA", "BAACB") 
+#d = dynproglin("ABC",  [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ABCACA", "BAACB") 
 #print("Score:   ", d[0])
 #print("Indices: ", d[1],d[2])
+
+#NWScore("ACGC", "CGTAT", "ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]])
+e = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "AGTACGCA", "TATGC") 
