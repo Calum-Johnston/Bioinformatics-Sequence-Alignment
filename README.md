@@ -7,9 +7,9 @@ Global Alignment:
 
 Local Alignment:
 - Smith-Waterson Algorithm
-
-
-
+  
+  
+  
 ### FORMAT
 INPUT: (Alphabet, Substitution Matrix, sequence_1, sequence_2) where
 - Alphabet is a string
@@ -20,7 +20,7 @@ INPUT: (Alphabet, Substitution Matrix, sequence_1, sequence_2) where
 EXAMPLE:  
 Alphabet could be "ABC"  
 Substitution matrix:  
-  	A 	B 	C 	_  
+  	  A 	B 	  C 	_  
 A 	1 	-1 	-2 	-1  
 B 	-1 	2 	-4 	-1  
 C 	-2 	-4 	3 	-2  
