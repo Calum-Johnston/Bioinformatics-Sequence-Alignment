@@ -1,9 +1,9 @@
 # Hirschberg's Algorithm
 # https://en.wikipedia.org/wiki/Hirschberg%27s_algorithm
 
-def dynproglin(alphabet, subMat, a, b):
+def Hirschberg(alphabet, subMat, a, b):
 
-    def Hirschberg(a, b, alphabet, subMat):
+    def align(a, b, alphabet, subMat):
         aAlign, bAlign = "", ""
 
         if(len(a) == 0):
@@ -25,15 +25,15 @@ def dynproglin(alphabet, subMat, a, b):
             temp = [x + y for x, y in zip(scoreL, reverseList(scoreR))]
             bMid = temp.index(max(temp))
 
-            aAlign_l, bAlign_1 = Hirschberg(a[:aMid], b[:bMid], alphabet, subMat)
-            aAlign_r, bAlign_r = Hirschberg(a[aMid:], b[bMid:], alphabet, subMat)
+            aAlign_l, bAlign_1 = align(a[:aMid], b[:bMid], alphabet, subMat)
+            aAlign_r, bAlign_r = align(a[aMid:], b[bMid:], alphabet, subMat)
 
             aAlign = aAlign_l + aAlign_r
             bAlign = bAlign_1 + bAlign_r
 
         return aAlign, bAlign
 
-    RSTT = Hirschberg(a, b, alphabet, subMat)
+    RSTT = align(a, b, alphabet, subMat)
     print(RSTT[0])
     print(RSTT[1])
 
