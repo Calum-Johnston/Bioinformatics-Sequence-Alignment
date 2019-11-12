@@ -61,13 +61,13 @@ def NWScore(a, b, alphabet, subMat):
             scoringMatrix[0][z] = scoringMatrix[1][z]
     return scoringMatrix[1]
 
+def reverseList(lst):
+    return lst[::-1]
 
 def printMatrix(matrix):
     for i in range(len(matrix)):
         print(matrix[i])
 
-def reverseList(lst):
-    return lst[::-1]
 
 
 
@@ -157,5 +157,4 @@ def NeedlanWunsch(alphabet, subMat, a, b):
 #print("Score:   ", d[0])
 #print("Indices: ", d[1],d[2])
 
-#NWScore("ACGC", "CGTAT", "ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]])
-e = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "AGTACGCA", "TATGC") 
+#e = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "AGTACGCA", "TATGC")
