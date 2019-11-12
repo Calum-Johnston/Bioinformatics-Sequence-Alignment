@@ -5,24 +5,26 @@ def dynproglin(alphabet, subMat, a, b):
 
     def Hirschberg(a, b, alphabet, subMat):
         aAlign, bAlign = "", ""
-    
+
         if(len(a) == 0):
-          for i in range(0, len(b)):
-                aAlign += a[i]
-                bAlign += "-"
-        elif(len(b) == 0):
-            for i in range(0, len(a)):
+          for i in range(0, len(b) - 1):
                 aAlign + "-"
                 bAlign += b[i]
-        elif(len(a) == 1 and len(b) == 1):
-            #Perform normal dynprog on it (NeedelanWunsch)
-            print("hi")
+        elif(len(b) == 0):
+            for i in range(0, len(a) - 1):
+                aAlign += a[i]
+                bAlign += "-"
+        elif(len(a) == 1 or len(b) == 1):
+            rst = NeedlanWunsch(alphabet, subMat, a, b)
+            aAlign = rst[1]
+            bAlign = rst[2]
         else:
             aMid = int(len(a) / 2)
             scoreL = NWScore(a[:aMid], b, alphabet, subMat)
             scoreR = NWScore(reverseList(a[aMid:]), reverseList(b), alphabet, subMat)
 
-            temp = scoreL + reverseList(scoreR)
+            temp = [x + y for x, y in zip(scoreL, reverseList(scoreR))]
+            print(temp)
             bMid = temp.index(max(temp))
 
             aAlign_l, bAlign_1 = Hirschberg(a[:aMid], b[:bMid], alphabet, subMat)
@@ -33,6 +35,9 @@ def dynproglin(alphabet, subMat, a, b):
 
         return aAlign, bAlign
 
+    RSTT = Hirschberg(a, b, alphabet, subMat)
+    print(RSTT[0])
+    print(RSTT[1])
 
 
 def NWScore(a, b, alphabet, subMat):
@@ -66,7 +71,72 @@ def printMatrix(matrix):
 def reverseList(lst):
     return lst[::-1]
 
+
+
+
+4
+
+def NeedlanWunsch(alphabet, subMat, a, b):
+
+    def populateScoringMatrix(alphabet, subMat, a, b):
+        scoMat = initialiseScoringMatrix(alphabet, subMat, a, b)
+        dirMat = initialiseDirectionMatrix(alphabet, subMat, a, b)
+        for i in range(1, len(a) + 1):
+            for j in range(1, len(b) + 1):
+                diagonal = scoMat[i-1][j-1] + subMat[alphabet.index(a[i - 1])][alphabet.index(b[j - 1])]
+                up = scoMat[i-1][j] + subMat[len(alphabet)][alphabet.index(a[i - 1])]
+                left = scoMat[i][j-1] + subMat[alphabet.index(b[j - 1])][len(alphabet)]
+                bestScore = max(diagonal, left, up)
+                if bestScore == diagonal: dirMat[i][j] = "D"
+                elif bestScore == up: dirMat[i][j] = "U"
+                else: dirMat[i][j] = "L"
+                scoMat[i][j] = bestScore
+        return [scoMat, dirMat]
+
+    def initialiseScoringMatrix(alphabet, subMat, a, b):
+        scoringMatrix = [[' ' for x in range(len(b) + 1)] for y in range(len(a) + 1)]
+        scoringMatrix[0][0] = 0
+        for x in range(1, len(a) + 1):
+            scoringMatrix[x][0] = scoringMatrix[x-1][0] + subMat[len(alphabet)][alphabet.index(a[x - 1])]   
+        for y in range(1, len(b) + 1):
+            scoringMatrix[0][y] = scoringMatrix[0][y-1] + subMat[len(alphabet)][alphabet.index(b[y - 1])]
+        return scoringMatrix
+
+    def initialiseDirectionMatrix(alphabet, subMat, a, b):
+        directionMatrix = [[' ' for x in range(len(b) + 1)] for y in range(len(a) + 1)]
+        for x in range(1, len(a) + 1):
+            directionMatrix[x][0] = "U"
+        for y in range(1, len(b) + 1):
+            directionMatrix[0][y] = "L"
+        return directionMatrix
+
+    def getBestMatching(scoMat, dirMat, a, b):
+        xPos = len(a)
+        yPos = len(b)
+        aMatch = ""
+        bMatch = ""
+        while(xPos > 0 or yPos > 0):
+            if(dirMat[xPos][yPos] == "D"):
+                aMatch = a[xPos - 1] + aMatch
+                bMatch = b[yPos - 1] + bMatch
+                yPos -= 1
+                xPos -= 1
+            elif(dirMat[xPos][yPos] == "U"):
+                aMatch = a[xPos - 1] + aMatch
+                bMatch = "-" + bMatch
+                xPos -= 1
+            else:
+                aMatch = "-" + aMatch
+                bMatch = b[yPos - 1] + bMatch
+                yPos -= 1
+        return [aMatch, bMatch]
     
+    lst = populateScoringMatrix(alphabet, subMat, a, b)
+    scoMat = lst[0]
+    dirMat = lst[1]
+    alignment = getBestMatching(scoMat, dirMat, a, b)
+    scoreAndAlignment = [scoMat[len(a)][len(b)], alignment[0], alignment[1]]
+    return scoreAndAlignment
 
 
     
@@ -84,3 +154,7 @@ def reverseList(lst):
 #c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
 #print("Score:   ", c[0])
 #print("Indices: ", c[1],c[2])
+
+d = dynproglin("ABC",  [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ABCACA", "BAACB") 
+#print("Score:   ", d[0])
+#print("Indices: ", d[1],d[2])

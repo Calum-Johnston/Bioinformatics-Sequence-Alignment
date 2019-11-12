@@ -38,7 +38,7 @@ def initialiseScoringMatrix(alphabet, subMat, a, b):
 def initialiseDirectionMatrix(alphabet, subMat, a, b):
     directionMatrix = [[' ' for x in range(len(b) + 1)] for y in range(len(a) + 1)]
     for x in range(1, len(a) + 1):
-        directionMatrix[x][0] = "U"
+        directionMatrix[x][0] = "U"        
     for y in range(1, len(b) + 1):
         directionMatrix[0][y] = "L"
     return directionMatrix
@@ -55,7 +55,7 @@ def getBestMatching(scoMat, dirMat, a, b, maxValuePos):
             xPos -= 1
         else:
             yPos -= 1
-    
+        
     return [aMatch, bMatch]    
 
 def printMatrix(matrix):
@@ -66,14 +66,14 @@ def printMatrix(matrix):
 
 # TEST CASES
 
-a = dynprog ("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
-print("Score:   ", a[0])
-print("Indices: ", a[1],a[2])
+#a = dynprog ("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
+#print("Score:   ", a[0])
+#print("Indices: ", a[1],a[2])
 
-b = dynprog ("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
-print("Score:   ", b[0])
-print("Indices: ", b[1],b[2])
+#b = dynprog ("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
+#print("Score:   ", b[0])
+#print("Indices: ", b[1],b[2])
 
-c = dynprog("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
-print("Score:   ", c[0])
-print("Indices: ", c[1],c[2])
+#c = dynprog("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
+#print("Score:   ", c[0])
+#print("Indices: ", c[1],c[2])
