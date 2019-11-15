@@ -33,10 +33,13 @@ def Hirschberg(alphabet, subMat, a, b):
 
         return aAlign, bAlign
 
-    #NWScore_Test(a, b, alphabet, subMat)
-    #RSTT = align(a, b, alphabet, subMat)
-    #print(RSTT[0])
-    #print(RSTT[1])
+    maxV = NWScore_Max(a, b, alphabet, subMat)
+    minV = NWScore_Min(reverseList(a), reverseList(b), alphabet, subMat, maxV[0], maxV[1])
+    localA = a[minV[0]:maxV[1][0]]
+    localB = b[minV[1]:maxV[1][1]]
+    
+    RSTT = align(localA, localB, alphabet, subMat)
+    return [maxV[0], RSTT[0], RSTT[1]]
 
 
 def NWScore(a, b, alphabet, subMat):
@@ -63,10 +66,13 @@ def NWScore(a, b, alphabet, subMat):
     return scoringMatrix[1]
 
 
-def NWScore_Min(a, b, alphabet, subMat):
+def NWScore_Min(a, b, alphabet, subMat, maxValue, maxValuePos):
     # Initialise matrices
     scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
     directionMatrix = [['' for x in range(len(b) + 1)] for y in range(2)]
+    maxX = len(a) - maxValuePos[0]
+    maxY = len(b) - maxValuePos[1]
+    doneSearching = False
     
     # Initialises first row
     for y in range(1, len(b) + 1):
@@ -87,10 +93,22 @@ def NWScore_Min(a, b, alphabet, subMat):
                 scoringMatrix[1][y] = max(diagonal,up,left,0)
                 if(scoringMatrix[1][y] == diagonal): 
                     directionMatrix[1][y] = "D"
+                    if(x == maxX + 1 and y == maxY + 1 and doneSearching == False):
+                        maxX = x; maxY = y
+                        if(scoringMatrix[1][y] == maxValue):
+                            doneSearching = True
                 elif(scoringMatrix[1][y] == up): 
                     directionMatrix[1][y] = "U"
+                    if(x == maxX + 1 and y == maxY and doneSearching == False):
+                        maxX = x
+                        if(scoringMatrix[1][y] == maxValue):
+                            doneSearching = True
                 elif(scoringMatrix[1][y] == left): 
                     directionMatrix[1][y] = "L"
+                    if(x == maxX and y == maxY + 1 and doneSearching == False):
+                        maxY = y
+                        if(scoringMatrix[1][y] == maxValue):
+                            doneSearching = True
         
         # Puts row 1 in row 0
         for z in range(0, len(b) + 1):
@@ -98,7 +116,7 @@ def NWScore_Min(a, b, alphabet, subMat):
             directionMatrix[0][z] = directionMatrix[1][z]
             directionMatrix[1][z] = ""
 
-    return scoringMatrix[1]
+    return len(a) - maxX, len(b) - maxY
 
 
 def NWScore_Max(a, b, alphabet, subMat):
@@ -225,8 +243,8 @@ def NeedlanWunsch(alphabet, subMat, a, b):
 #print("Indices: ", a[1],a[2])
 
 b = Hirschberg("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
-#print("Score:   ", b[0])
-#print("Indices: ", b[1],b[2])
+print("Score:   ", b[0])
+print("Indices: ", b[1],b[2])
 
 #c = Hirschberg("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
 #print("Score:   ", c[0])
