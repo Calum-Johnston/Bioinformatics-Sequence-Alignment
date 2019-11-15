@@ -5,6 +5,8 @@ def dynprog(alphabet, subMat, a, b):
     scoMat = lst[0]; dirMat = lst[1]; maxValue = lst[2]; maxValuePosition = lst[3]
     alignment = getBestMatching(scoMat, dirMat, a, b, maxValuePosition)
     scoreAndAlignment = [maxValue, alignment[0], alignment[1]]
+    printMatrix(scoMat)
+    printMatrix(dirMat)
     return scoreAndAlignment
 
 def populateScoringMatrix(alphabet, subMat, a, b):
@@ -45,8 +47,7 @@ def initialiseDirectionMatrix(alphabet, subMat, a, b):
 
 def getBestMatching(scoMat, dirMat, a, b, maxValuePos):
     xPos = maxValuePos[0]; yPos = maxValuePos[1]
-    print(xPos)
-    print(yPos)
+    print(xPos, yPos)
     aMatch = []; bMatch = []
     while(scoMat[xPos][yPos] != 0):
         if(dirMat[xPos][yPos] == "D"):
@@ -67,10 +68,10 @@ def printMatrix(matrix):
 
 
 # TEST CASES
-
-#a = dynprog("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
-#print("Score:   ", a[0])
-#print("Indices: ", a[1],a[2])
+#a = dynprog("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ACAABBAA", "ABCCCABC")
+a = dynprog("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
+print("Score:   ", a[0])
+print("Indices: ", a[1],a[2])
 
 #b = dynprog("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
 #print("Score:   ", b[0])
