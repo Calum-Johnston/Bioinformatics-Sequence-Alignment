@@ -33,10 +33,10 @@ def Hirschberg(alphabet, subMat, a, b):
 
         return aAlign, bAlign
 
-    maxValueInfo = NWScore_maxValue(a, b, alphabet, subMat)
+    maxValueInfo = NWScore_maxValue(a, b, alphabet, subMat, True)
     print(maxValueInfo[1])
     print()
-    minValueInfo = NWScore_maxValue(reverseList(a), reverseList(b), alphabet, subMat)
+    minValueInfo = NWScore_maxValue(reverseList(a), reverseList(b), alphabet, subMat, False)
     print((len(a) - minValueInfo[1][0]) , " " , (len(b) - minValueInfo[1][1]))
     print()
     localA = a[(len(a) - minValueInfo[1][0]):maxValueInfo[1][0]]
@@ -71,9 +71,10 @@ def NWScore(a, b, alphabet, subMat):
     return scoringMatrix[1]
 
 
-def NWScore_maxValue(a, b, alphabet, subMat):
+def NWScore_maxValue(a, b, alphabet, subMat, rev):
     scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
     maxValue = 0
+    tempMaxValue = 0
     maxValuePos = [0,0]
 
     # Initialises first row
@@ -94,11 +95,20 @@ def NWScore_maxValue(a, b, alphabet, subMat):
                     scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)],
                     0
                 )
-        possibleMaxValue = (max(scoringMatrix[1]))
-        if(maxValue <= possibleMaxValue):
-            maxValue = possibleMaxValue
-            maxValuePos[0] = x
-            maxValuePos[1] = len(scoringMatrix[1]) - 1 - reverseList(scoringMatrix[1]).index(possibleMaxValue)
+
+        if(rev == True):
+            tempMaxValue = (max(scoringMatrix[1]))
+            if(maxValue <= tempMaxValue):
+                maxValue = tempMaxValue
+                maxValuePos[0] = x
+                maxValuePos[1] = len(scoringMatrix[1]) - 1 - reverseList(scoringMatrix[1]).index(tempMaxValue)
+        else:
+            if(tempMaxValue == 0):
+                tempMaxValue = (max(scoringMatrix[1]))
+                if(maxValue <= tempMaxValue):
+                    maxValue = tempMaxValue
+                    maxValuePos[0] = x
+                    maxValuePos[1] = scoringMatrix[1].index(tempMaxValue)
 
         # Puts row 1 in row 0
         for z in range(0, len(b) + 1):
