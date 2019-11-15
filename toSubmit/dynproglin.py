@@ -73,10 +73,10 @@ def NWScore_Min(a, b, alphabet, subMat, maxValue, maxValuePos):
     # Initialise matrices
     scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
     directionMatrix = [['' for x in range(len(b) + 1)] for y in range(2)]
+    #storingPrevious = [[0 for x in range(len(b) + 1)] for y in range(2)]
     maxX = len(a) - maxValuePos[0]
     maxY = len(b) - maxValuePos[1]
-    print(maxValuePos[0])
-    print(maxValuePos[1])
+
     doneSearching = False
     
     # Initialises the first row to 0
@@ -84,7 +84,7 @@ def NWScore_Min(a, b, alphabet, subMat, maxValue, maxValuePos):
         scoringMatrix[0][y] = 0
         directionMatrix[0][y] = 'L'
 
-    print(scoringMatrix[0])
+    print(directionMatrix[0])
 
     # Loops through each row (except 1st) and each column position 
     for x in range(1, len(a) + 1):
@@ -98,10 +98,18 @@ def NWScore_Min(a, b, alphabet, subMat, maxValue, maxValuePos):
                 left = scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)]
                 scoringMatrix[1][y] = max(diagonal,up,left,0)
 
-                if(scoringMatrix[1][y] == diagonal): 
-                    directionMatrix[1][y] = "D"
+                if(scoringMatrix[1][y] == diagonal): directionMatrix[1][y] = "D"
+                elif(scoringMatrix[1][y] == up): directionMatrix[1][y] = "U"
+                elif(scoringMatrix[1][y] == left): directionMatrix[1][y] = "L"
+
+                if(scoringMatrix[0][y] == diagonal): 
                     if(x == maxX + 1 and y == maxY + 1 and doneSearching == False):
-                        maxX = x; maxY = y
+                        
+                        if(directionMatrix[1][y - 1] == "U"): # Accounts for issue where previous one was up
+                            maxY = y
+                        elif(directionMatrix[0][y-1]):
+                            maxX = x; maxY = y
+
                         if(scoringMatrix[1][y] == maxValue):
                             doneSearching = True
 
@@ -118,15 +126,14 @@ def NWScore_Min(a, b, alphabet, subMat, maxValue, maxValuePos):
                         maxY = y
                         if(scoringMatrix[1][y] == maxValue):
                             doneSearching = True
-                #print(maxX, " ", maxY)
-        print(scoringMatrix[1])
+        print(directionMatrix[1])
 
         # Swaps row 1 and row 0 (in an effort to conserve memory)
         for z in range(0, len(b) + 1):
             scoringMatrix[0][z] = scoringMatrix[1][z]
             directionMatrix[0][z] = directionMatrix[1][z]
             directionMatrix[1][z] = ""
-
+    
     # Returns the normalised position of the minimum value
     print(len(a) - maxX, " ", len(b) - maxY)
     return len(a) - maxX, len(b) - maxY
