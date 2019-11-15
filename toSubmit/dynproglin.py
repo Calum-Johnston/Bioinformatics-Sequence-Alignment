@@ -1,9 +1,9 @@
 # Hirschberg's Algorithm
 # https://en.wikipedia.org/wiki/Hirschberg%27s_algorithm
 
-def dynproglin(alphabet, subMat, a, b):
+def Hirschberg(alphabet, subMat, a, b):
 
-    def Hirschberg(a, b, alphabet, subMat):
+    def align(a, b, alphabet, subMat):
         aAlign, bAlign = "", ""
 
         if(len(a) == 0):
@@ -20,76 +20,92 @@ def dynproglin(alphabet, subMat, a, b):
             bAlign = rst[2]
         else:
             aMid = int(len(a) / 2)
-            scoreL = NWScore(a[:aMid], b, alphabet, subMat)[0]
-            scoreR = NWScore(reverseList(a[aMid:]), reverseList(b), alphabet, subMat)[0]
+            scoreL = NWScore(a[:aMid], b, alphabet, subMat)
+            scoreR = NWScore(reverseList(a[aMid:]), reverseList(b), alphabet, subMat)
             temp = [x + y for x, y in zip(scoreL, reverseList(scoreR))]
             bMid = temp.index(max(temp))
 
-            aAlign_l, bAlign_1 = Hirschberg(a[:aMid], b[:bMid], alphabet, subMat)
-            aAlign_r, bAlign_r = Hirschberg(a[aMid:], b[bMid:], alphabet, subMat)
+            aAlign_l, bAlign_1 = align(a[:aMid], b[:bMid], alphabet, subMat)
+            aAlign_r, bAlign_r = align(a[aMid:], b[bMid:], alphabet, subMat)
 
             aAlign = aAlign_l + aAlign_r
             bAlign = bAlign_1 + bAlign_r
 
         return aAlign, bAlign
 
+    maxValueInfo = NWScore_maxValue(a, b, alphabet, subMat)
+    minValueInfo = NWScore_maxValue(reverseList(a), reverseList(b), alphabet, subMat)
+    localA = a[(len(a) - minValueInfo[1][0]):maxValueInfo[1][0]]
+    localB = b[(len(b) - minValueInfo[1][1]):maxValueInfo[1][1]]
+
+    RSTT = align(localA, localB, alphabet, subMat)
+    print(RSTT[0])
+    print(RSTT[1])
 
 
-    def NWScore(a, b, alphabet, subMat):
-        scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
-        maxValue = 0
-        maxValuePos = [0,0]
+def NWScore(a, b, alphabet, subMat):
+    scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
+    # Initialises first row
+    for y in range(1, len(b) + 1):
+        scoringMatrix[0][y] = scoringMatrix[0][y-1] + subMat[len(alphabet)][alphabet.index(b[y - 1])]
+    
+    # Completes all rows but the first (0th)
+    for x in range(1, len(a) + 1):
+        # Completes all column positions (including 0th)
+        for y in range(0, len(b) + 1):
+            if(y == 0):
+                scoringMatrix[1][y] = scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])]
+            else:
+                scoringMatrix[1][y] = max(
+                    scoringMatrix[0][y-1] + subMat[alphabet.index(a[x - 1])][alphabet.index(b[y - 1])],
+                    scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])],
+                    scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)]
+                )
+        # Puts row 1 in row 0
+        for z in range(0, len(b) + 1):
+            scoringMatrix[0][z] = scoringMatrix[1][z]
+    return scoringMatrix[1]
 
-        # Initialises first row
-        for y in range(1, len(b) + 1):
-            scoringMatrix[0][y] = scoringMatrix[0][y-1] + subMat[len(alphabet)][alphabet.index(b[y - 1])]
-        
-        maxValue = max(scoringMatrix[0])
-        maxValuePos[1] = scoringMatrix[0].index(maxValue)
-        print(scoringMatrix[0])
 
-        # Completes all rows but the first (0th)
-        for x in range(1, len(a) + 1):
-            # Completes all column positions (including 0th)
-            for y in range(0, len(b) + 1):
-                if(y == 0):
-                    scoringMatrix[1][y] = scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])]
-                else:
-                    scoringMatrix[1][y] = max(
-                        scoringMatrix[0][y-1] + subMat[alphabet.index(a[x - 1])][alphabet.index(b[y - 1])],
-                        scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])],
-                        scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)]
-                    )
+def NWScore_maxValue(a, b, alphabet, subMat):
+    scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
+    maxValue = 0
+    maxValuePos = [0,0]
 
-            if(maxValue < max(scoringMatrix[1])):
-                maxValue = max(scoringMatrix[1])
-                maxValuePos[0] = x
-                maxValuePos[1] = scoringMatrix[1].index(maxValue)
-            print(scoringMatrix[1])
+    # Initialises first row
+    for y in range(1, len(b) + 1):
+        scoringMatrix[0][y] = 0
+    
+    # Completes all rows but the first (0th)
+    for x in range(1, len(a) + 1):
+        # Completes all column positions (including 0th)
+        for y in range(0, len(b) + 1):
+            if(y == 0):
+                scoringMatrix[1][y] = 0
+            else:
+                scoringMatrix[1][y] = max(
+                    scoringMatrix[0][y-1] + subMat[alphabet.index(a[x - 1])][alphabet.index(b[y - 1])],
+                    scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])],
+                    scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)],
+                    0
+                )
+        possibleMaxValue = (max(scoringMatrix[1]))
+        if(maxValue < possibleMaxValue):
+            maxValuePos[0] = x
+            maxValuePos[1] = scoringMatrix[1].index(possibleMaxValue)
+            maxValue = possibleMaxValue
 
-            # Puts row 1 in row 0
-            for z in range(0, len(b) + 1):
-                scoringMatrix[0][z] = scoringMatrix[1][z]
+        # Puts row 1 in row 0
+        for z in range(0, len(b) + 1):
+            scoringMatrix[0][z] = scoringMatrix[1][z]      
+    return maxValue, maxValuePos
 
-        return scoringMatrix[1], maxValue, maxValuePos
+def reverseList(lst):
+    return lst[::-1]
 
-    def reverseList(lst):
-        return lst[::-1]
-
-    def printMatrix(matrix):
-        for i in range(len(matrix)):
-            print(matrix[i])
-
-    T = NWScore(a, b, alphabet, subMat)
-    print(T[1])
-    print(T[2])           
-    S = NWScore(reverseList(a), reverseList(b), alphabet, subMat)
-    print(S[1])
-    print(len(a) + 1 - S[2][0])
-    print(len(b) + 1 - S[2][1])
-    #RSTT = Hirschberg(a, b, alphabet, subMat)
-    #print(RSTT[0])
-    #print(RSTT[1])
+def printMatrix(matrix):
+    for i in range(len(matrix)):
+        print(matrix[i])
 
 
 
@@ -180,4 +196,4 @@ def NeedlanWunsch(alphabet, subMat, a, b):
 #print("Score:   ", d[0])
 #print("Indices: ", d[1],d[2])
 
-e = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "AGTACGCA", "TATGC")
+e = Hirschberg("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "AGTACGCA", "TATGC")
