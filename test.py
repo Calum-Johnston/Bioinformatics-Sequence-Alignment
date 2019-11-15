@@ -33,21 +33,46 @@ def Hirschberg(alphabet, subMat, a, b):
 
         return aAlign, bAlign
 
-    NWScore(a, b, alphabet, subMat)
+    #NWScore_Test(a, b, alphabet, subMat)
     #RSTT = align(a, b, alphabet, subMat)
-   # print(RSTT[0])
+    #print(RSTT[0])
     #print(RSTT[1])
 
 
 def NWScore(a, b, alphabet, subMat):
     scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
+    # Initialises first row
+    for y in range(1, len(b) + 1):
+        scoringMatrix[0][y] = scoringMatrix[0][y-1] + subMat[len(alphabet)][alphabet.index(b[y - 1])]
+    
+    # Completes all rows but the first (0th)
+    for x in range(1, len(a) + 1):
+        # Completes all column positions (including 0th)
+        for y in range(0, len(b) + 1):
+            if(y == 0):
+                scoringMatrix[1][y] = scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])]
+            else:
+                scoringMatrix[1][y] = max(
+                    scoringMatrix[0][y-1] + subMat[alphabet.index(a[x - 1])][alphabet.index(b[y - 1])],
+                    scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])],
+                    scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)]
+                )
+        # Puts row 1 in row 0
+        for z in range(0, len(b) + 1):
+            scoringMatrix[0][z] = scoringMatrix[1][z]
+    return scoringMatrix[1]
+
+
+def NWScore_Min(a, b, alphabet, subMat):
+    # Initialise matrices
+    scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
     directionMatrix = [['' for x in range(len(b) + 1)] for y in range(2)]
+    
     # Initialises first row
     for y in range(1, len(b) + 1):
         scoringMatrix[0][y] = 0
         directionMatrix[0][y] = 'L'
-    #print(scoringMatrix[0])
-    print(directionMatrix[0])
+
     # Completes all rows but the first (0th)
     for x in range(1, len(a) + 1):
         # Completes all column positions (including 0th)
@@ -68,16 +93,48 @@ def NWScore(a, b, alphabet, subMat):
                     directionMatrix[1][y] = "L"
         
         # Puts row 1 in row 0
-        print(directionMatrix[1])
         for z in range(0, len(b) + 1):
             scoringMatrix[0][z] = scoringMatrix[1][z]
             directionMatrix[0][z] = directionMatrix[1][z]
             directionMatrix[1][z] = ""
-        #print(scoringMatrix[1])
+
     return scoringMatrix[1]
+
+
+def NWScore_Max(a, b, alphabet, subMat):
+    # Initialise matrices
+    scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
+    maxValue = 0
+    maxValuePos = [0,0]
+
+    # Initialises first row
+    for y in range(1, len(b) + 1):
+        scoringMatrix[0][y] = 0
+
+    # Completes all rows but the first (0th)
+    for x in range(1, len(a) + 1):
+        # Completes all column positions (including 0th)
+        for y in range(0, len(b) + 1):
+            if(y == 0):
+                scoringMatrix[1][y] = 0
+            else:
+                scoringMatrix[1][y] = max(
+                    scoringMatrix[0][y-1] + subMat[alphabet.index(a[x - 1])][alphabet.index(b[y - 1])],
+                    scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])],
+                    scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)],
+                    0
+                )
+        
+        # Puts row 1 in row 0
+        for z in range(0, len(b) + 1):
+            scoringMatrix[0][z] = scoringMatrix[1][z]
+
+    return scoringMatrix[1]
+
 
 def reverseList(lst):
     return lst[::-1]
+
 
 def printMatrix(matrix):
     for i in range(len(matrix)):
