@@ -188,19 +188,19 @@ def NeedlanWunsch(alphabet, subMat, a, b):
 
 # TEST CASES
 
-#a = Hirschberg("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
-#print("Score:   ", a[0])
-#print("Indices: ", a[1],a[2])
+a = Hirschberg("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
+print("Score:   ", a[0])
+print("Indices: ", a[1],a[2])
 
-#b = dynproglin("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
-#print("Score:   ", b[0])
-#print("Indices: ", b[1],b[2])
+b = Hirschberg("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
+print("Score:   ", b[0])
+print("Indices: ", b[1],b[2])
 
-#c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
+#c = Hirschberg("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
 #print("Score:   ", c[0])
 #print("Indices: ", c[1],c[2])
 
-#d = dynproglin("ABC",  [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ABCACA", "BAACB") 
+#d = Hirschberg("ABC",  [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ABCACA", "BAACB") 
 #print("Score:   ", d[0])
 #print("Indices: ", d[1],d[2])
 
