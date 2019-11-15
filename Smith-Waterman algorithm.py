@@ -5,6 +5,8 @@ def dynprog(alphabet, subMat, a, b):
     scoMat = lst[0]; dirMat = lst[1]; maxValue = lst[2]; maxValuePosition = lst[3]
     alignment = getBestMatching(scoMat, dirMat, a, b, maxValuePosition)
     scoreAndAlignment = [maxValue, alignment[0], alignment[1]]
+    printMatrix(scoMat)
+    printMatrix(dirMat)
     return scoreAndAlignment
 
 def populateScoringMatrix(alphabet, subMat, a, b):
@@ -45,6 +47,8 @@ def initialiseDirectionMatrix(alphabet, subMat, a, b):
 
 def getBestMatching(scoMat, dirMat, a, b, maxValuePos):
     xPos = maxValuePos[0]; yPos = maxValuePos[1]
+    print(xPos)
+    print(yPos)
     aMatch = []; bMatch = []
     while(scoMat[xPos][yPos] != 0):
         if(dirMat[xPos][yPos] == "D"):
@@ -66,14 +70,26 @@ def printMatrix(matrix):
 
 # TEST CASES
 
-#a = dynprog ("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
+#a = Hirschberg("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
 #print("Score:   ", a[0])
 #print("Indices: ", a[1],a[2])
 
-#b = dynprog ("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
+#b = dynproglin("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
 #print("Score:   ", b[0])
 #print("Indices: ", b[1],b[2])
 
-#c = dynprog("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
+#c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
 #print("Score:   ", c[0])
 #print("Indices: ", c[1],c[2])
+
+#d = dynproglin("ABC",  [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ABCACA", "BAACB") 
+#print("Score:   ", d[0])
+#print("Indices: ", d[1],d[2])
+
+#e = Hirschberg("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "AGTACGCA", "TATGC")
+#print("Score:   ", e[0])
+#print("Indices: ", e[1],e[2])
+
+#f = Hirschberg("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "TGGGGGGT", "TAAAAAAT")
+#print("Score:   ", f[0])
+#print("Indices: ", f[1],f[2])
