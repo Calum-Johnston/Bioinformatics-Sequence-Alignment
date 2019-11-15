@@ -125,11 +125,18 @@ def NWScore_Max(a, b, alphabet, subMat):
                     0
                 )
         
+        # Updates maximum value and it's position
+        tempMaxValue = max(scoringMatrix[1])
+        if(maxValue < tempMaxValue):
+            maxValue = tempMaxValue
+            maxValuePos[0] = x
+            maxValuePos[1] = scoringMatrix[1].index(maxValue)
+
         # Puts row 1 in row 0
         for z in range(0, len(b) + 1):
             scoringMatrix[0][z] = scoringMatrix[1][z]
 
-    return scoringMatrix[1]
+    return maxValue, maxValuePos
 
 
 def reverseList(lst):
