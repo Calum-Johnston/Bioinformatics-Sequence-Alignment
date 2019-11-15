@@ -33,15 +33,13 @@ def Hirschberg(alphabet, subMat, a, b):
 
         return aAlign, bAlign
 
-    maxValueInfo = NWScore_maxValue(a, b, alphabet, subMat, False)
-    minValueInfo = NWScore_maxValue(reverseList(a), reverseList(b), alphabet, subMat, True)
-    print(maxValueInfo[1] , " ", maxValueInfo[0])
-    print(minValueInfo[1])
-    localA = a[(len(a) - minValueInfo[1][0]):maxValueInfo[1][0]]
-    localB = b[(len(b) - minValueInfo[1][1]):maxValueInfo[1][1]]
+    maxV = NWScore_Max(a, b, alphabet, subMat)
+    minV = NWScore_Min(reverseList(a), reverseList(b), alphabet, subMat, maxV[0], maxV[1])
+    localA = a[minV[0]:maxV[1][0]]
+    localB = b[minV[1]:maxV[1][1]]
+    
     RSTT = align(localA, localB, alphabet, subMat)
-
-    return [maxValueInfo[0], RSTT[0], RSTT[1]]
+    return [maxV[0], RSTT[0], RSTT[1]]
 
 
 def NWScore(a, b, alphabet, subMat):
@@ -68,18 +66,69 @@ def NWScore(a, b, alphabet, subMat):
     return scoringMatrix[1]
 
 
-def NWScore_maxValue(a, b, alphabet, subMat, rev):
+def NWScore_Min(a, b, alphabet, subMat, maxValue, maxValuePos):
+    # Initialise matrices
+    scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
+    directionMatrix = [['' for x in range(len(b) + 1)] for y in range(2)]
+    maxX = len(a) - maxValuePos[0]
+    maxY = len(b) - maxValuePos[1]
+    doneSearching = False
+    
+    # Initialises first row
+    for y in range(1, len(b) + 1):
+        scoringMatrix[0][y] = 0
+        directionMatrix[0][y] = 'L'
+
+    # Completes all rows but the first (0th)
+    for x in range(1, len(a) + 1):
+        # Completes all column positions (including 0th)
+        for y in range(0, len(b) + 1):
+            if(y == 0):
+                scoringMatrix[1][y] = 0
+                directionMatrix[1][y] = 'U'
+            else:
+                diagonal = scoringMatrix[0][y-1] + subMat[alphabet.index(a[x - 1])][alphabet.index(b[y - 1])]
+                up = scoringMatrix[0][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])]
+                left = scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)]
+                scoringMatrix[1][y] = max(diagonal,up,left,0)
+                if(scoringMatrix[1][y] == diagonal): 
+                    directionMatrix[1][y] = "D"
+                    if(x == maxX + 1 and y == maxY + 1 and doneSearching == False):
+                        maxX = x; maxY = y
+                        if(scoringMatrix[1][y] == maxValue):
+                            doneSearching = True
+                elif(scoringMatrix[1][y] == up): 
+                    directionMatrix[1][y] = "U"
+                    if(x == maxX + 1 and y == maxY and doneSearching == False):
+                        maxX = x
+                        if(scoringMatrix[1][y] == maxValue):
+                            doneSearching = True
+                elif(scoringMatrix[1][y] == left): 
+                    directionMatrix[1][y] = "L"
+                    if(x == maxX and y == maxY + 1 and doneSearching == False):
+                        maxY = y
+                        if(scoringMatrix[1][y] == maxValue):
+                            doneSearching = True
+        
+        # Puts row 1 in row 0
+        for z in range(0, len(b) + 1):
+            scoringMatrix[0][z] = scoringMatrix[1][z]
+            directionMatrix[0][z] = directionMatrix[1][z]
+            directionMatrix[1][z] = ""
+
+    return len(a) - maxX, len(b) - maxY
+
+
+def NWScore_Max(a, b, alphabet, subMat):
+    # Initialise matrices
     scoringMatrix = [[0 for x in range(len(b) + 1)] for y in range(2)]
     maxValue = 0
-    tempMaxValue = 0
     maxValuePos = [0,0]
 
     # Initialises first row
     for y in range(1, len(b) + 1):
         scoringMatrix[0][y] = 0
-    print(scoringMatrix[0])
-    print()
-    
+
     # Completes all rows but the first (0th)
     for x in range(1, len(a) + 1):
         # Completes all column positions (including 0th)
@@ -93,28 +142,24 @@ def NWScore_maxValue(a, b, alphabet, subMat, rev):
                     scoringMatrix[1][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)],
                     0
                 )
+        
+        # Updates maximum value and it's position
+        tempMaxValue = max(scoringMatrix[1])
+        if(maxValue < tempMaxValue):
+            maxValue = tempMaxValue
+            maxValuePos[0] = x
+            maxValuePos[1] = scoringMatrix[1].index(maxValue)
 
-        tempMaxValue = (max(scoringMatrix[1]))
-        if(rev == True):
-            if(maxValue <= tempMaxValue):
-                maxValue = tempMaxValue
-                maxValuePos[0] = x
-                maxValuePos[1] = len(scoringMatrix[1]) - 1 - reverseList(scoringMatrix[1]).index(maxValue)
-        else:
-            if(maxValue < tempMaxValue):
-                maxValue = tempMaxValue
-                maxValuePos[0] = x
-                maxValuePos[1] = scoringMatrix[1].index(maxValue)
-
-        print(scoringMatrix[1])
         # Puts row 1 in row 0
         for z in range(0, len(b) + 1):
-            scoringMatrix[0][z] = scoringMatrix[1][z]    
+            scoringMatrix[0][z] = scoringMatrix[1][z]
 
     return maxValue, maxValuePos
 
+
 def reverseList(lst):
     return lst[::-1]
+
 
 def printMatrix(matrix):
     for i in range(len(matrix)):
@@ -216,5 +261,3 @@ print("Indices: ", b[1],b[2])
 #f = Hirschberg("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "TGGGGGGT", "TAAAAAAT")
 #print("Score:   ", f[0])
 #print("Indices: ", f[1],f[2])
-
-
