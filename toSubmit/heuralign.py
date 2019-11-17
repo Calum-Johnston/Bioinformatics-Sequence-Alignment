@@ -14,10 +14,14 @@ def initialiseIndexTable(alphabet, a, ktup):
         indexTable[a[i:i+ktup]] = indexTable[a[i:i+ktup]] + [i]
     return indexTable
 
-def getMatches(alphabet, a, b, ktup):
+def getMatches(indexTable, a, b, ktup):
+    matches = []
     for i in range(0, len(b) + 1 - ktup):
-        print("test")
-
+        bsubString = b[i:i+ktup]
+        aMatchPositions = indexTable[bsubString]
+        for position in aMatchPositions:
+            matches.append([position, i])
+    return matches
 
 
 a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC", "CCAAADDAAAACCAAADDCCAAAA", 2)
