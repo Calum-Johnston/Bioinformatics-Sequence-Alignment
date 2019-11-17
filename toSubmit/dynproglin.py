@@ -78,7 +78,6 @@ def NWScore_Max(a, b, alphabet, subMat):
     # Initialises the first row to 0
     for y in range(1, len(b) + 1):
         scoringMatrix[0][y] = 0
-    print(scoringMatrix[0])
     # Loops through each row (except 1st) and each column position 
     for x in range(1, len(a) + 1):
         for y in range(0, len(b) + 1):
@@ -100,12 +99,10 @@ def NWScore_Max(a, b, alphabet, subMat):
             maxValuePos[1] = scoringMatrix[1].index(maxValue)
 
         # Swaps row 1 and row 0 (in an effort to conserve memory)
-        print(scoringMatrix[1])
         for z in range(0, len(b) + 1):
             scoringMatrix[0][z] = scoringMatrix[1][z]
 
     # Returns the maximum value and it's position
-    print()
     return maxValue, maxValuePos
 
 
@@ -197,26 +194,26 @@ def NeedlanWunsch(alphabet, subMat, a, b):
 
 # TEST CASES
 
-#a = dynproglin("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
-#print("Score:   ", a[0])
-#print("Indices: ", a[1],a[2])
+a = dynproglin("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
+print("Score:   ", a[0])
+print("Indices: ", a[1],a[2])
 
-#b = dynproglin("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
-#print("Score:   ", b[0])
-#print("Indices: ", b[1],b[2])
+b = dynproglin("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
+print("Score:   ", b[0])
+print("Indices: ", b[1],b[2])
 
-#c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
-#print("Score:   ", c[0])
-#print("Indices: ", c[1],c[2])
+c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
+print("Score:   ", c[0])
+print("Indices: ", c[1],c[2])
 
-#d = dynproglin("ABC",  [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ABCACA", "BAACB") 
-#print("Score:   ", d[0])
-#print("Indices: ", d[1],d[2])
+d = dynproglin("ABC",  [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ABCACA", "BAACB") 
+print("Score:   ", d[0])
+print("Indices: ", d[1],d[2])
 
-#e = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "AGTACGCA", "TATGC")
-#print("Score:   ", e[0])
-#print("Indices: ", e[1],e[2])
+e = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "AGTACGCA", "TATGC")
+print("Score:   ", e[0])
+print("Indices: ", e[1],e[2])
 
-#f = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "TGGGGGGT", "TAAAAAAT")
-#print("Score:   ", f[0])
-#print("Indices: ", f[1],f[2])
+f = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "TGGGGGGT", "TAAAAAAT")
+print("Score:   ", f[0])
+print("Indices: ", f[1],f[2])
