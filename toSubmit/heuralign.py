@@ -5,7 +5,7 @@ def heuralign(alphabet, subMat, a, b, ktup):
     indexTable = initialiseIndexTable(alphabet, a, ktup)
     matches = getMatches(indexTable, a, b, ktup)
     diagonalPairs = orderPairs(matches, a, b)
-    #scoreDiagonals(diagonalPairs)
+    scoreDiagonals(diagonalPairs)
 
 def initialiseIndexTable(alphabet, a, ktup):
     keywords = [''.join(i) for i in itertools.product("ABCD", repeat = 2)]
@@ -38,7 +38,14 @@ def orderPairs(matches, a, b):
     return diagonalPairs
 
 def scoreDiagonals(diagonalPairs):
-    return 0
+    bestDiagonals = []
+    totalScore = 0
+    for diagonals in diagonalPairs.values():
+        startPos = (0,0)
+        endPos = (0,0)
+        value = 0
+        for dia in diagonals:
+            
 
 
 
