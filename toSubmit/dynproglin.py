@@ -5,6 +5,9 @@
 def dynproglin(alphabet, subMat, a, b):
     maxV = NWScore_Max(a, b, alphabet, subMat)  
     minV = NWScore_Max(reverseList(a[:maxV[1][0]]), reverseList(b[:maxV[1][1]]), alphabet, subMat)
+    print("A: ", a)
+    print("B: ", b)
+    print()
     localA = a[len(a[:maxV[1][0]]) - minV[1][0]:maxV[1][0]]
     localB = b[len(b[:maxV[1][1]]) - minV[1][1]:maxV[1][1]]
     RSTT = recurse(localA, localB, alphabet, subMat)
@@ -36,6 +39,12 @@ def recurse(a, b, alphabet, subMat):
         scoreR = NWScore(reverseList(a[aMid:]), reverseList(b), alphabet, subMat)
         temp = [x + y for x, y in zip(scoreL, reverseList(scoreR))]
         bMid = temp.index(max(temp))
+
+        print("A's first half: ", a[:aMid])
+        print("A's second half: ", a[aMid:])
+        print("B's first half: ", b[:bMid])
+        print("B's second half: ", b[bMid:])
+        print()
 
         aAlign_l, bAlign_1 = recurse(a[:aMid], b[:bMid], alphabet, subMat)
         aAlign_r, bAlign_r = recurse(a[aMid:], b[bMid:], alphabet, subMat)
@@ -194,26 +203,28 @@ def NeedlanWunsch(alphabet, subMat, a, b):
 
 # TEST CASES
 
-a = dynproglin("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
-print("Score:   ", a[0])
-print("Indices: ", a[1],a[2])
+#a = dynproglin("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
+#print("Score:   ", a[0])
+#print("Indices: ", a[1],a[2])
 
-b = dynproglin("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
-print("Score:   ", b[0])
-print("Indices: ", b[1],b[2])
+#b = dynproglin("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
+#print("Score:   ", b[0])
+#print("Indices: ", b[1],b[2])
 
-c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
-print("Score:   ", c[0])
-print("Indices: ", c[1],c[2])
+#c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
+#print("Score:   ", c[0])
+#print("Indices: ", c[1],c[2])
 
-d = dynproglin("ABC",  [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "ABCACA", "BAACB") 
-print("Score:   ", d[0])
-print("Indices: ", d[1],d[2])
+#d = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "TGGGGGGT", "TAAAAAAT")
+#print("Score:   ", d[0])
+#print("Indices: ", d[1],d[2])
 
-e = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "AGTACGCA", "TATGC")
+e = dynproglin("ABCD",[[ 1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]],
+"AACAAADAAAACAADAADAAA", "CDCDDD")
 print("Score:   ", e[0])
 print("Indices: ", e[1],e[2])
 
-f = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "TGGGGGGT", "TAAAAAAT")
+f = dynproglin("ABCD",[[ 1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]],
+"DDCDDCCCDCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACCCCDDDCDADCDCDCDCD", "DDCDDCCCDCBCCCCDDDCDBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBDCDCDCDCD")
 print("Score:   ", f[0])
 print("Indices: ", f[1],f[2])
