@@ -11,7 +11,7 @@ def dynproglin(alphabet, subMat, a, b):
     bEnd = maxV[1][1]
     localA = a[aStart:aEnd]
     localB = b[bStart:bEnd]
-    RSTT = recurse(localA, localB, alphabet, subMat, aStart, aEnd, bStart, bEnd)
+    RSTT = recurse(localA, localB, alphabet, subMat)
     return [maxV[0], RSTT[0], RSTT[1]]
 
 ########################################
@@ -19,11 +19,19 @@ def dynproglin(alphabet, subMat, a, b):
 ########################################
 
 # Recursively builds up the best alignment of two sequences and returns them
-def recurse(a, b, alphabet, subMat, aStart, aEnd, bStart, bEnd):
+def recurse(a, b, alphabet, subMat):
     aAlign, bAlign = "", ""
 
-    if(len(a) == 1 or len(b) == 1):
-        rst = NeedlanWunsch(alphabet, subMat, a, b,  aEnd, bEnd)
+    if(len(a) == 0):
+        for i in range(0, len(b)):
+            aAlign + "-"
+            bAlign += b[i]
+    elif(len(b) == 0):
+        for i in range(0, len(a)):
+            aAlign += a[i]
+            bAlign += "-"
+    elif(len(a) == 1 or len(b) == 1):
+        rst = NeedlanWunsch(alphabet, subMat, a, b)
         aAlign = rst[1]
         bAlign = rst[2]
     else:
@@ -33,11 +41,8 @@ def recurse(a, b, alphabet, subMat, aStart, aEnd, bStart, bEnd):
         temp = [x + y for x, y in zip(scoreL, reverseList(scoreR))]
         bMid = temp.index(max(temp))
 
-        #print("1st = ", a[:aMid], b[:bMid], aStart, aStart + aMid, bStart, bStart + bMid)
-       # print("2nd = ", a[aMid:], b[bMid:], aStart + aMid, aEnd, bStart + bMid, bEnd)
-
-        aAlign_l, bAlign_1 = recurse(a[:aMid], b[:bMid], alphabet, subMat, aStart, aStart + aMid, bStart, bStart + bMid)
-        aAlign_r, bAlign_r = recurse(a[aMid:], b[bMid:], alphabet, subMat, aStart + aMid, aEnd, bStart + bMid, bEnd)
+        aAlign_l, bAlign_1 = recurse(a[:aMid], b[:bMid], alphabet, subMat)
+        aAlign_r, bAlign_r = recurse(a[aMid:], b[bMid:], alphabet, subMat)
 
         aAlign = aAlign_l + aAlign_r
         bAlign = bAlign_1 + bAlign_r
@@ -125,7 +130,7 @@ def printMatrix(matrix):
 ########################################
 ## Function(s) performs a global alignment of two sequences a and b
 ########################################
-def NeedlanWunsch(alphabet, subMat, a, b, aEnd, bEnd):
+def NeedlanWunsch(alphabet, subMat, a, b):
 
     def populateScoringMatrix(alphabet, subMat, a, b):
         scoMat = initialiseScoringMatrix(alphabet, subMat, a, b)
@@ -164,25 +169,28 @@ def NeedlanWunsch(alphabet, subMat, a, b, aEnd, bEnd):
             directionMatrix[0][y] = "L"
         return directionMatrix
 
-    def getBestMatching(scoMat, dirMat, a, b, aEnd, bEnd):
+    def getBestMatching(scoMat, dirMat, a, b):
         xPos = len(a); yPos = len(b)
-        aMatch = []; bMatch = []
+        aMatch = ""; bMatch = ""
         while(xPos > 0 or yPos > 0):
             if(dirMat[xPos][yPos] == "D"):
-                aMatch = [aEnd - 1] + aMatch
-                bMatch = [bEnd - 1] + bMatch
+                aMatch = a[xPos - 1] + aMatch
+                bMatch = b[yPos - 1] + bMatch
                 xPos -= 1; yPos -= 1
-                aEnd -= 1; bEnd -= 1
             elif(dirMat[xPos][yPos] == "U"):
-                xPos -= 1; aEnd -= 1
+                aMatch = a[xPos - 1] + aMatch
+                bMatch = "-" + bMatch
+                xPos -= 1
             else:
-                yPos -= 1; bEnd -= 1
+                aMatch = "-" + aMatch
+                bMatch = b[yPos - 1] + bMatch
+                yPos -= 1
         return [aMatch, bMatch]
     
     lst = populateScoringMatrix(alphabet, subMat, a, b)
     scoMat = lst[0]
     dirMat = lst[1]
-    alignment = getBestMatching(scoMat, dirMat, a, b, aEnd, bEnd)
+    alignment = getBestMatching(scoMat, dirMat, a, b)
     scoreAndAlignment = [scoMat[len(a)][len(b)], alignment[0], alignment[1]]
     return scoreAndAlignment
 
@@ -195,9 +203,9 @@ def NeedlanWunsch(alphabet, subMat, a, b, aEnd, bEnd):
 #print("Score:   ", a[0])
 #print("Indices: ", a[1],a[2])
 
-#b = dynproglin("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
-#print("Score:   ", b[0])
-#print("Indices: ", b[1],b[2])
+b = dynproglin("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
+print("Score:   ", b[0])
+print("Indices: ", b[1],b[2])
 
 #c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
 #print("Score:   ", c[0])
