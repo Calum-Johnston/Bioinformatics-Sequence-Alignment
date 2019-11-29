@@ -80,8 +80,8 @@ def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
     startX = 1; startY = 1
 
     # Initialise matrices
-    scoMat = initialiseScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth)
-    dirMat = initialiseDirectionMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth)
+    scoMat = initialiseScoringMatrix(alphabet, subMat, a, b)
+    dirMat = initialiseDirectionMatrix(alphabet, subMat, a, b)
 
     # Find starting positions
     if(diagonal > 0):
@@ -146,7 +146,7 @@ def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
     return [scoMat, dirMat, maxValue, maxValuePosition]
 
 # Function simply initialises the scoring Matrix
-def initialiseScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
+def initialiseScoringMatrix(alphabet, subMat, a, b):
     scoMat = [[' ' for x in range(len(b) + 1)] for y in range(len(a) + 1)]
     scoMat[0][0] = 0
     for x in range(1, len(a) + 1):
@@ -155,7 +155,7 @@ def initialiseScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
         scoMat[0][y] = 0
     return scoMat
 
-def initialiseDirectionMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
+def initialiseDirectionMatrix(alphabet, subMat, a, b):
     dirMat = [[' ' for x in range(len(b) + 1)] for y in range(len(a) + 1)]
     for x in range(1, len(a) + 1):
         dirMat[x][0] = "U"
