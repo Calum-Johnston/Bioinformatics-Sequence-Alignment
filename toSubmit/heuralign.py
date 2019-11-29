@@ -37,20 +37,27 @@ def orderPairs(matches, a, b):
         diagonalPairs[(match[1]-match[0])] = lst
     return diagonalPairs
 
-def scoreDiagonals(diagonalPairs, subMat, alphabet, a, b):
-    x,y = 0
-    for diagonal,diagonalValues in diagonalPairs.items():
-        print(diagonal)
-        print(diagonalValues)
-        if(diagonal > 0):
-            x = 0
-        currentAlign = []
-        currentScore = 0
-        bestAlign = []
-        bestScore = 0
-        #for dia in diagonals:
-           # if(len(dia) != 0):  # Ignore diagonals with no matches
-            #    score = subMat[alphabet.index(a[dia[0]])][alphabet.index(b[dia[1]])] + subMat[alphabet.index(a[dia[0] + 1])][alphabet.index(b[dia[1] + 1])]
+def scoreDiagonals(diagonalPairs, subMat, alphabet, a, b, ktup):
+    x = 0; y = 0
+    diagonalScores = {}
+    for diagonalNum,diagonalValues in diagonalPairs.items():
+        if(diagonalValues != []):
+            currentAlign = []
+            currentScore = 0
+            previousAlign = []
+            previousScore = 0
+            for dia in diagonalValues:     
+                if not(dia in previousAlign):
+                    currentScore += subMat[alphabet.index(a[dia[0]])][alphabet.index(b[dia[1]])] + subMat[alphabet.index(a[dia[0] + 1])][alphabet.index(b[dia[1] + 1])]
+                    currentAlign.append(dia)
+                    x = dia[0] + 1; y = dia[1] + 1; scoreDecreasing = False
+                    while(x + ktup < len(a) + 1 and  y < len(b) + 1 and scoreDecreasing == False):
+                        tempScore = subMat[alphabet.index(a[x])][alphabet.index(b[y])] + subMat[alphabet.index(a[x + 1])][alphabet.index(b[y + 1])]
+                        if(tempScore + currentScore < currentScore):
+                            scoreDecreasing = True
+                        else:
+                            currentScore += tempScore
+                            currentAlign.append([a[x],b[y]])
                 
             
 
@@ -149,10 +156,10 @@ def printMatrix(matrix):
 
 
 
-#a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAB", "AB", 2)
+a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAB", "AB", 2)
 
 #a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC4", "CCAAADDAAAACCAAADDCCAAAA", 2)
 #print("Score:   ", a[0])
 #print("Indices: ", a[1],a[2])
 
-e = dynprog("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAAA", "ABACC", 1, 2)
+#e = dynprog("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAAA", "ABACC", 1, 2)
