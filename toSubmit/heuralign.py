@@ -77,7 +77,7 @@ def dynprog(alphabet, subMat, a, b, diagonal, diagonalWidth):
 def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
     maxValue = 0
     maxValuePosition = [0, 0]
-    startX = 1; startY = 1;
+    startX = 1; startY = 1
 
     # Initialise matrices
     scoMat = initialiseScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth)
@@ -85,22 +85,22 @@ def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
 
     # Find starting positions
     if(diagonal > 0):
-        startY = diagonal #(startX is already 0 so no need to do that here)
+        startY = diagonal + 1 #(startX is already 0 so no need to do that here)
     elif(diagonal < 0):
-        startX = diagonal
+        startX = abs(diagonal) + 1
 
     # Get constraining diagonals (left and right)
     diagonalL = diagonal - diagonalWidth
     diagonalR = diagonal + diagonalWidth
-    
+
     # Loop through matrix until we are out of bounds
-    while(startX < len(a) and startY < len(b)):
+    while(startX < len(a) + 1 or startY < len(b) + 1):
+
         # For each row, loop through values that could only be within diagonal restriction
-        for diagonalPoint in range(diagonal - diagonalWidth, diagonal + diagonalWidth):
-            print(diagonal - diagonalWidth, diagonal + diagonalWidth)
+        for diagonalPoint in range(startY - diagonalWidth, startY + diagonalWidth + 1):
+        
             #Check if new y position is actually within the y range
-            print(startX, diagonalPoint)
-            if(diagonalPoint >= 1 and diagonalPoint < len(b)):
+            if(diagonalPoint >= 1 and diagonalPoint < len(b) + 1):
 
                 # Get the diagonal score
                 dia = scoMat[startX-1][diagonalPoint - 1] + subMat[alphabet.index(a[startX - 1])][alphabet.index(b[diagonalPoint - 1])]
@@ -117,6 +117,7 @@ def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
                 else:
                     up = False
 
+                # Calculates the value for the backtracking matrix
                 if(up == False):
                     bestScore = max(dia, left, 0)
                     if bestScore == dia: dirMat[startX][diagonalPoint] = "D"
@@ -131,50 +132,20 @@ def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
                     elif bestScore == up: dirMat[startX][diagonalPoint] = "U"
                     elif bestScore == left: dirMat[startX][diagonalPoint] = "L"
 
+                # Updates the scoring matrix
                 scoMat[startX][diagonalPoint] = bestScore
 
+                # Updates the best score value
                 if(bestScore > maxValue):
                     maxValue = bestScore; maxValuePosition[0] = startX; maxValuePosition[1] = diagonalPoint
 
+        # Increment the values of which diagonal we are following
         startX += 1
         startY += 1
 
-    printMatrix(scoMat)
-    printMatrix(dirMat)
-
     return [scoMat, dirMat, maxValue, maxValuePosition]
 
-    
-    for x in range(1, len(a) + 1):
-        for y in range(1, len(b) + 1):
-            if((diagonal - diagonalWidth) < (y-x) < (diagonal + diagonalWidth)):
-
-                dia = scoMat[x-1][y-1] + subMat[alphabet.index(a[x - 1])][alphabet.index(b[y - 1])]
-
-                if(scoMat[x-1][y] != ' '): #up is available
-                    up = scoMat[x-1][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])]
-                    bestScore = max(dia, up, 0)
-                    if bestScore == dia: dirMat[x][y] = "D"
-                    elif bestScore == up: dirMat[x][y] = "U"
-                elif(scoMat[x][y-1] != ' '): #left is available
-                    left = scoMat[x][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)]
-                    bestScore = max(dia, left, 0)
-                    if bestScore == dia: dirMat[x][y] = "D"
-                    elif bestScore == left: dirMat[x][y] = "L"
-                else:
-                    left = scoMat[x][y-1] + subMat[alphabet.index(b[y - 1])][len(alphabet)]
-                    up = scoMat[x-1][y] + subMat[len(alphabet)][alphabet.index(a[x - 1])]
-                    bestScore = max(dia, left, up, 0)
-                    if bestScore == dia: dirMat[x][y] = "D"
-                    elif bestScore == up: dirMat[x][y] = "U"
-                    elif bestScore == left: dirMat[x][y] = "L"
-                scoMat[x][y] = bestScore
-                if(bestScore > maxValue):
-                    maxValue = bestScore; maxValuePosition[0] = x; maxValuePosition[1] = y
-    printMatrix(scoMat)
-    printMatrix(dirMat)
-    return [scoMat, dirMat, maxValue, maxValuePosition]
-
+# Function simply initialises the scoring Matrix
 def initialiseScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
     scoMat = [[' ' for x in range(len(b) + 1)] for y in range(len(a) + 1)]
     scoMat[0][0] = 0
@@ -219,3 +190,4 @@ def printMatrix(matrix):
 #print("Indices: ", a[1],a[2])
 
 e = dynprog("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAAA", "ABACC", 1, 2)
+print(e[1], e[2])
