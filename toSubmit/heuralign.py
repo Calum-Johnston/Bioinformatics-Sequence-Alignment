@@ -2,12 +2,13 @@
 import itertools
 
 def heuralign(alphabet, subMat, a, b, ktup):
-    indexTable = initialiseIndexTable(alphabet, a, ktup)
-    matches = getMatches(indexTable, a, b, ktup)
+    indexTable = initialiseIndexTable(a, ktup)
+    matches = getMatches(indexTable, b, ktup)
+    #if matches are 0 reduce ktup by 1 and start again
     diagonalPairs = orderPairs(matches, a, b)
     scoreDiagonals(diagonalPairs, subMat, alphabet, a, b)
 
-def initialiseIndexTable(alphabet, a, ktup):
+def initialiseIndexTable( a, ktup):
     keywords = [''.join(i) for i in itertools.product("ABCD", repeat = 2)]
     indexTable = {}
     for keyword in keywords:
@@ -18,7 +19,7 @@ def initialiseIndexTable(alphabet, a, ktup):
         indexTable[a[i:i+ktup]] = lst
     return indexTable
 
-def getMatches(indexTable, a, b, ktup):
+def getMatches(indexTable, b, ktup):
     matches = []
     for i in range(0, len(b) + 1 - ktup):
         bsubString = b[i:i+ktup]
@@ -41,7 +42,7 @@ def scoreDiagonals(diagonalPairs, subMat, alphabet, a, b, ktup):
     x = 0; y = 0
     diagonalScores = {}
     for diagonalNum,diagonalValues in diagonalPairs.items():
-        if(diagonalValues != []):
+        if(diagonalValues != []):  # i.e. diagona
             currentAlign = []
             currentScore = 0
             previousAlign = []
@@ -78,7 +79,18 @@ def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
     dirMat = initialiseDirectionMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth)
     maxValue = 0
     maxValuePosition = [0, 0]
-    x_start = 0; x_end = 0
+    startX = 0; startY = 0;
+
+    # Find starting positions
+    if(diagonal > 0):
+        startY = diagonal #(startX is already 0 so no need to do that here)
+    elif(diagonal < 0):
+        startX = diagonal
+    
+    # Loop through matrix until we are out of bounds
+    while(startX < len(a) and startY < len(b)):
+        # For each row, loop through values that could only be within diagonal restriction
+        for diagonalPoint )
 
     for x in range(1, len(a) + 1):
         for y in range(1, len(b) + 1):
