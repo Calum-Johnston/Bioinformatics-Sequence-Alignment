@@ -41,10 +41,11 @@ def scoreDiagonals(diagonalPairs):
     bestDiagonals = []
     totalScore = 0
     for diagonals in diagonalPairs.values():
-        startPos = (0,0)
-        endPos = (0,0)
+        startPos = []
+        endPos = []
         value = 0
         for dia in diagonals:
+            startPos = 
             
 
 
