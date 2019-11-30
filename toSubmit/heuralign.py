@@ -6,9 +6,9 @@ def heuralign(alphabet, subMat, a, b, ktup):
     matches = getMatches(indexTable, b, ktup)
     #if matches are 0 reduce ktup by 1 and start again
     diagonalPairs = orderPairs(matches, a, b)
-    scoreDiagonals(diagonalPairs, subMat, alphabet, a, b)
+    scoreDiagonals(diagonalPairs, subMat, alphabet, a, b, ktup)
 
-def initialiseIndexTable( a, ktup):
+def initialiseIndexTable(a, ktup):
     keywords = [''.join(i) for i in itertools.product("ABCD", repeat = 2)]
     indexTable = {}
     for keyword in keywords:
@@ -43,24 +43,22 @@ def scoreDiagonals(diagonalPairs, subMat, alphabet, a, b, ktup):
     diagonalScores = {}
     for diagonalNum,diagonalValues in diagonalPairs.items():
         if(diagonalValues != []):  # i.e. diagona
-            currentAlign = []
-            currentScore = 0
-            previousAlign = []
-            previousScore = 0
-            for dia in diagonalValues:     
-                if not(dia in previousAlign):
-                    currentScore += subMat[alphabet.index(a[dia[0]])][alphabet.index(b[dia[1]])] + subMat[alphabet.index(a[dia[0] + 1])][alphabet.index(b[dia[1] + 1])]
-                    currentAlign.append(dia)
-                    x = dia[0] + 1; y = dia[1] + 1; scoreDecreasing = False
-                    while(x + ktup < len(a) + 1 and  y < len(b) + 1 and scoreDecreasing == False):
-                        tempScore = subMat[alphabet.index(a[x])][alphabet.index(b[y])] + subMat[alphabet.index(a[x + 1])][alphabet.index(b[y + 1])]
-                        if(tempScore + currentScore < currentScore):
-                            scoreDecreasing = True
-                        else:
-                            currentScore += tempScore
-                            currentAlign.append([a[x],b[y]])
-                
-            
+            firstMatch = diagonalValues[0]
+            lastMatch = diagonalValues[len(diagonalValues) - 1]
+            if(firstMatch == lastMatch):
+                diagonalScores[diagonalNum] = scoreDiagonal(alphabet, subMat, a, b, firstMatch[0], firstMatch[1], lastMatch[0], ktup) 
+            else:
+                print(firstMatch, lastMatch)
+                diagonalScores[diagonalNum] = scoreDiagonal(alphabet, subMat, a, b, firstMatch[0], firstMatch[1], lastMatch[0], ktup)
+    return diagonalScores
+
+def scoreDiagonal(alphabet, subMat, a, b, startA, startB, end, ktup):
+    totalScore = 0
+    currentPos = 0
+    while(startA + currentPos < end + ktup):
+        totalScore += subMat[alphabet.index(a[startA + currentPos])][alphabet.index(b[startB + currentPos])]
+        currentPos += 1
+    return totalScore
 
 
 
@@ -185,9 +183,9 @@ def printMatrix(matrix):
 
 #a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAB", "AB", 2)
 
-#a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC4", "CCAAADDAAAACCAAADDCCAAAA", 2)
+a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC", "CCAAADDAAAACCAAADDCCAAAA", 2)
 #print("Score:   ", a[0])
 #print("Indices: ", a[1],a[2])
 
-e = dynprog("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAAA", "ABACC", 1, 2)
-print(e[1], e[2])
+#e = dynprog("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAAA", "ABACC", 1, 2)
+#print(e[1], e[2])
