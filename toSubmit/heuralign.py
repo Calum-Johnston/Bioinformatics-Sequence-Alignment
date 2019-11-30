@@ -6,7 +6,8 @@ def heuralign(alphabet, subMat, a, b, ktup):
     matches = getMatches(indexTable, b, ktup)
     #if matches are 0 reduce ktup by 1 and start again
     diagonalPairs = orderPairs(matches, a, b)
-    scoreDiagonals(diagonalPairs, subMat, alphabet, a, b, ktup)
+    diagonalScores = scoreDiagonals(diagonalPairs, subMat, alphabet, a, b, ktup)
+    evaluateBestDiagonals(diagonalScores, subMat, alphabet, a, b, ktup)
 
 def initialiseIndexTable(a, ktup):
     keywords = [''.join(i) for i in itertools.product("ABCD", repeat = 2)]
@@ -60,6 +61,14 @@ def scoreDiagonal(alphabet, subMat, a, b, startA, startB, end, ktup):
         currentPos += 1
     return totalScore
 
+def evaluateBestDiagonals(diagonalScores, subMat, alphabet, a, b, ktup):
+    for _ in range(0, 10):
+        maxDictVal = max(diagonalScores, key = diagonalScores.get)
+        print(dynprog(alphabet, subMat, a, b, maxDictVal, 5))
+        del diagonalScores[maxDictVal]
+
+
+
 
 
 # SMITH-WATERSON (local alignment of two strings)
@@ -75,28 +84,37 @@ def dynprog(alphabet, subMat, a, b, diagonal, diagonalWidth):
 def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
     maxValue = 0
     maxValuePosition = [0, 0]
-    startX = 1; startY = 1
 
     # Initialise matrices
     scoMat = initialiseScoringMatrix(alphabet, subMat, a, b)
     dirMat = initialiseDirectionMatrix(alphabet, subMat, a, b)
+    printMatrix(scoMat)
+    printMatrix(dirMat)
 
     # Find starting positions
+    # Note: The purpose of this part is to loop down the diagonal line and calculate all values
+    #       in the +- area of that diagonal (determined by the diagonalWidth). 
+    # Since we already calculated row 0, we start on row 1, in which the diagonal position would've incremented 1 (due to the nature of diagonals2)
     if(diagonal > 0):
-        startY = diagonal + 1 #(startX is already 0 so no need to do that here)
+        startX = 1; startY = diagonal + 1  
+    # Since we need previous rows to calculate current ones, we start at the highest possible row we need to calculate
+    # For each row up we go, we must decrement the centre of the diagonal (i.e. startY) by 1 
     elif(diagonal < 0):
-        startX = abs(diagonal) + 1
+        startX = abs(diagonal) + 1 -diagonalWidth; startY = 1 - diagonalWidth  
+    # Only other case involves starting at 1, 1 - since we already calculated the 0th row and column
+    else:
+        startX = 1; startY = 1
 
     # Get constraining diagonals (left and right)
     diagonalL = diagonal - diagonalWidth
     diagonalR = diagonal + diagonalWidth
 
     # Loop through matrix until we are out of bounds
-    while(startX < len(a) + 1 or startY < len(b) + 1):
-
+    while(startX < len(a) + 1 and startY < len(b) + 1):
+        
         # For each row, loop through values that could only be within diagonal restriction
         for diagonalPoint in range(startY - diagonalWidth, startY + diagonalWidth + 1):
-        
+
             #Check if new y position is actually within the y range
             if(diagonalPoint >= 1 and diagonalPoint < len(b) + 1):
 
@@ -140,7 +158,7 @@ def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
         # Increment the values of which diagonal we are following
         startX += 1
         startY += 1
-
+    printMatrix(scoMat)
     return [scoMat, dirMat, maxValue, maxValuePosition]
 
 # Function simply initialises the scoring Matrix
@@ -183,9 +201,12 @@ def printMatrix(matrix):
 
 #a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAB", "AB", 2)
 
-a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC", "CCAAADDAAAACCAAADDCCAAAA", 2)
+#a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC", "CCAAADDAAAACCAAADDCCAAAA", 2)
 #print("Score:   ", a[0])
 #print("Indices: ", a[1],a[2])
 
-#e = dynprog("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAAA", "ABACC", 1, 2)
+#e = dynprog("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC", "CCAAADDAAAACCAAADDCCAAAA", -6, 2)
 #print(e[1], e[2])
+
+e = dynprog("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACC", "CCAAADA", -3, 6)
+print(e[1], e[2])
