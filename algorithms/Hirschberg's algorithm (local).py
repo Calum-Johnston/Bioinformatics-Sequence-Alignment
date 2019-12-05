@@ -199,21 +199,21 @@ def NeedlanWunsch(alphabet, subMat, a, b):
 
 # TEST CASES
 
-#a = dynproglin("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
-#print("Score:   ", a[0])
-#print("Indices: ", a[1],a[2])
+a = dynproglin("ABC", [[1,-1,-2,-1],[-1,2,-4,-1],[-2,-4,3,-2],[-1,-1,-2,0]], "AABBAACA", "CBACCCBA")
+print("Score:   ", a[0])
+print("Indices: ", a[1],a[2])
 
 b = dynproglin("ACT", [[1,-1,-1,-2],[-1,1,-1,-2],[-1,-1,1,-2],[-2,-2,-2,1]], "TAATA", "TACTAA")
 print("Score:   ", b[0])
 print("Indices: ", b[1],b[2])
 
-#c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
-#print("Score:   ", c[0])
-#print("Indices: ", c[1],c[2])
+c = dynproglin("ACGT", [[1,-1,-1,-1,-1],[-1,1,-1,-1,-1],[-1,-1,1,-1,-1],[-1,-1,-1,1,-1],[-1,-1,-1,-1,1]], "GACTTAC", "CGTGAATTCAT") 
+print("Score:   ", c[0])
+print("Indices: ", c[1],c[2])
 
-#d = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "TGGGGGGT", "TAAAAAAT")
-#print("Score:   ", d[0])
-#print("Indices: ", d[1],d[2])
+d = dynproglin("ACGT",  [[2,-1,-1,-1,-2],[-1,2,-1,-1,-2],[-1,-1,2,-1,-2],[-1,-1,-1,2,-2],[-2,-2,-2,-2,0]], "TGGGGGGT", "TAAAAAAT")
+print("Score:   ", d[0])
+print("Indices: ", d[1],d[2])
 
 #e = dynproglin("ABCD",[[ 1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]],
 #"AACAAADAAAACAADAADAAA", "CDCDDD")
