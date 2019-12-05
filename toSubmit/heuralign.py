@@ -1,10 +1,11 @@
 # FASTA algorithm (Heuristic)
 import itertools
+from operator import itemgetter
 
 def heuralign(alphabet, subMat, a, b):
     matches = []
-    ktup = 3
-    diagonalWidth = 10
+    ktup = 2
+    diagonalWidth = 15
     while(matches == []):
         ktup -= 1
         indexTable = initialiseIndexTable(a, ktup)
@@ -13,7 +14,8 @@ def heuralign(alphabet, subMat, a, b):
     diagonalScores = scoreDiagonals(diagonalPairs, subMat, alphabet, a, b, ktup)
     score, align = evaluateBestDiagonals(diagonalScores, subMat, alphabet, a, b, ktup, diagonalWidth)
     return [score, align[0], align[1]]
-
+    
+# Initialises the index table
 def initialiseIndexTable(a, ktup):
     keywords = [''.join(i) for i in itertools.product("ABCD", repeat = ktup)]
     indexTable = {}
@@ -25,6 +27,7 @@ def initialiseIndexTable(a, ktup):
         indexTable[a[i:i+ktup]] = lst
     return indexTable
 
+# Gets the matches of substrings (length ktup) between the two sequences
 def getMatches(indexTable, b, ktup):
     matches = []
     for i in range(0, len(b) + 1 - ktup):
@@ -45,37 +48,59 @@ def orderPairs(matches, a, b):
     return diagonalPairs
 
 def scoreDiagonals(diagonalPairs, subMat, alphabet, a, b, ktup):
-    x = 0; y = 0
-    diagonalScores = {}
+    diagonalScores = []
     for diagonalNum,diagonalValues in diagonalPairs.items():
-        if(diagonalValues != []):  # i.e. diagona
-            firstMatch = diagonalValues[0]
-            lastMatch = diagonalValues[len(diagonalValues) - 1]
-            if(firstMatch == lastMatch):
-                diagonalScores[diagonalNum] = scoreDiagonal(alphabet, subMat, a, b, firstMatch[0], firstMatch[1], lastMatch[0], ktup) 
-            else:
-                diagonalScores[diagonalNum] = scoreDiagonal(alphabet, subMat, a, b, firstMatch[0], firstMatch[1], lastMatch[0], ktup)
+        if(diagonalValues != []):  # i.e. some seed exists in the diagonal
+
+            endPosition = -1
+    
+            # Loop through the diagonal values
+            for diagonal in diagonalValues:
+
+                # Check if the diagonal have already been visited
+                if (diagonal[0] > endPosition):
+                    
+                    # Score the diagonal
+                    diagonalScore, endPosition = scoreDiagonal(alphabet, subMat, a, b, diagonal[0], diagonal[1], ktup)
+        
+                    # Add the diagonal score
+                    diagonalScores.append((diagonalNum, diagonalScore))
+                     
     return diagonalScores
 
-def scoreDiagonal(alphabet, subMat, a, b, startA, startB, end, ktup):
+def scoreDiagonal(alphabet, subMat, a, b, startA, startB, ktup):
     totalScore = 0
     currentPos = 0
-    while(startA + currentPos < end + ktup):
-        totalScore += subMat[alphabet.index(a[startA + currentPos])][alphabet.index(b[startB + currentPos])]
-        currentPos += 1
-    return totalScore
+
+    bestScore = 0
+    bestPosition = 0
+    
+    visited = []
+    while(startA + currentPos < len(a) and startB + currentPos < len(b)):
+        currentScore = subMat[alphabet.index(a[startA + currentPos])][alphabet.index(b[startB + currentPos])]
+        if(totalScore + currentScore > totalScore):
+            totalScore += currentScore
+            bestScore = totalScore
+            bestPosition = currentPos
+            currentPos += 1
+        elif(totalScore + currentScore > 0):
+            totalScore += currentScore
+            currentPos += 1
+        else:
+            break;
+    return totalScore, startA + currentPos
 
 def evaluateBestDiagonals(diagonalScores, subMat, alphabet, a, b, ktup, diagonalWidth):
     count = 0
     bestScore = 0
     bestAlignments = []
     while(count < 10 and bool(diagonalScores)):
-        maxDictVal = max(diagonalScores, key = diagonalScores.get)
-        results = dynprog(alphabet, subMat, a, b, maxDictVal, diagonalWidth)
+        maxVal = max(diagonalScores,key=itemgetter(1))[0]
+        results = dynprog(alphabet, subMat, a, b, maxVal, diagonalWidth)
         if(bestScore < results[0]):
             bestScore = results[0]
             bestAlignments = [results[1], results[2]]
-        del diagonalScores[maxDictVal]
+        diagonalScores = [x for x in diagonalScores if x[0] != maxVal]
         count += 1
     return bestScore, bestAlignments
 
@@ -107,20 +132,21 @@ def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
     # Since we already calculated row 0, we start on row 1, in which the diagonal position would've incremented 1 (due to the nature of diagonals2)
     if(diagonal > 0):
         startX = 1; startY = diagonal + 1  
-    # Since we need previous rows to calculate current ones, we start at the highest possible row we need to calculate
+    # Since we need previous rows to calculate current ones, we start at the highest possible row we need to calculate (at minimum 1)
     # For each row up we go, we must decrement the centre of the diagonal (i.e. startY) by 1 
     elif(diagonal < 0):
-        startX = max(1, abs(diagonal - diagonalWidth) + 1); startY = 1 - diagonalWidth  
+        if(diagonal - diagonalWidth < 1):
+            startX = 1
+            startY = diagonal + startX
+        else:
+            startX = diagonal - diagonalWidth
+            startY = 1 - diagonalWidth
     # Only other case involves starting at 1, 1 - since we already calculated the 0th row and column
     else:
         startX = 1; startY = 1
 
-    # Get constraining diagonals (left and right)
-    diagonalL = diagonal - diagonalWidth
-    diagonalR = diagonal + diagonalWidth
-
     # Loop through matrix until we are out of bounds
-    while(startX < len(a) + 1 and startY < len(b) + 1):
+    while(startX  < len(a) + 1 and startY - diagonalWidth < len(b) + 1):
         
         # For each row, loop through values that could only be within diagonal restriction
         for diagonalPoint in range(startY - diagonalWidth, startY + diagonalWidth + 1):
@@ -160,7 +186,7 @@ def populateScoringMatrix(alphabet, subMat, a, b, diagonal, diagonalWidth):
 
                 # Updates the scoring matrix
                 scoMat[startX][diagonalPoint] = bestScore
-
+                
                 # Updates the best score value
                 if(bestScore > maxValue):
                     maxValue = bestScore; maxValuePosition[0] = startX; maxValuePosition[1] = diagonalPoint
@@ -208,19 +234,16 @@ def printMatrix(matrix):
 
 
 
-#a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "ABDAAB", "AB", 2)
-#print("Score:   ", a[0])
-#print("Indices: ", a[1],a[2])
 
-a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC", "CCAAADDAAAACCAAADDCCAAAA")
-print("Score:   ", a[0])
-print("Indices: ", a[1],a[2])
-b = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AACAAADAAAACAADAADAAA", "CDCDDD")
-print("Score:   ", b[0])
-print("Indices: ", b[1],b[2])
-c = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "DDCDDCCCDCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACCCCDDDCDADCDCDCDCD", "DDCDDCCCDCBCCCCDDDCDBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBDCDCDCDCD")
-print("Score:   ", c[0])
-print("Indices: ", c[1],c[2])
 
-#e = dynprog("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC", "CCAAADDAAAACCAAADDCCAAAA", -6, 2)
-#print(e[1], e[2])
+##a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC", "CCAAADDAAAACCAAADDCCAAAA")
+##print("Score:   ", a[0])
+##print("Indices: ", a[1],a[2])
+##b = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AACAAADAAAACAADAADAAA", "CDCDDD")
+##print("Score:   ", b[0])
+##print("Indices: ", b[1],b[2])
+##c = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "DDCDDCCCDCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACCCCDDDCDADCDCDCDCD", "DDCDDCCCDCBCCCCDDDCDBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBDCDCDCDCD")
+##print("Score:   ", c[0])
+##print("Indices: ", c[1],c[2])
+
+
