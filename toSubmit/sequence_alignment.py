@@ -487,15 +487,3 @@ def heuralign(alphabet, subMat, a, b):
     diagonalScores = scoreDiagonals(diagonalPairs, subMat, alphabet, a, b, ktup)
     score, align = evaluateBestDiagonals(diagonalScores, subMat, alphabet, a, b, ktup, diagonalWidth)
     return [score, align[0], align[1]]
-
-
-
-a = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AAAAACCDDCCDDAAAAACC", "CCAAADDAAAACCAAADDCCAAAA")
-print("Score:   ", a[0])
-print("Indices: ", a[1],a[2])
-b = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "AACAAADAAAACAADAADAAA", "CDCDDD")
-print("Score:   ", b[0])
-print("Indices: ", b[1],b[2])
-c = heuralign ("ABCD", [[1,-5,-5,-5,-1],[-5, 1,-5,-5,-1],[-5,-5, 5,-5,-4],[-5,-5,-5, 6,-4],[-1,-1,-4,-4,-9]], "DDCDDCCCDCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACCCCDDDCDADCDCDCDCD", "DDCDDCCCDCBCCCCDDDCDBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBDCDCDCDCD")
-print("Score:   ", c[0])
-print("Indices: ", c[1],c[2])
