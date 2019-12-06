@@ -1,5 +1,6 @@
 import itertools
 from operator import itemgetter
+import numpy as np
 
 # Smith-Waterman algorithm
 def dynprog(alphabet, subMat, a, b):
@@ -441,7 +442,7 @@ def heuralign(alphabet, subMat, a, b):
 
     # Function simply initialises the scoring Matrix
     def initialiseScoringMatrix(alphabet, subMat, a, b):
-        scoMat = [[' ' for x in range(len(b) + 1)] for y in range(len(a) + 1)]
+        scoMat = np.zeros((len(a)+1, len(b)+1))
         scoMat[0][0] = 0
         for x in range(1, len(a) + 1):
             scoMat[x][0] = 0
@@ -450,7 +451,7 @@ def heuralign(alphabet, subMat, a, b):
         return scoMat
 
     def initialiseDirectionMatrix(alphabet, subMat, a, b):
-        dirMat = [[' ' for x in range(len(b) + 1)] for y in range(len(a) + 1)]
+        dirMat = np.empty((len(a)+1, len(b)+1), dtype='U')
         for x in range(1, len(a) + 1):
             dirMat[x][0] = "U"
         for y in range(1, len(b) + 1):
