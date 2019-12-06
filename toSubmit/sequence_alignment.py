@@ -478,7 +478,7 @@ def heuralign(alphabet, subMat, a, b):
     
     matches = []
     ktup = 2
-    diagonalWidth = 15
+    diagonalWidth = 16
     while(matches == []):
         ktup -= 1
         indexTable = initialiseIndexTable(a, ktup)
